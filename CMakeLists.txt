@@ -7,6 +7,8 @@
 
 cmake_minimum_required( VERSION 3.11 FATAL_ERROR )
 
+project("FlatBuffersCMake" VERSION 1.0.0)
+
 set( FLATBUFFERS_REPOSITORY "https://github.com/google/flatbuffers" CACHE STRING "Repository of flatbuffers" )
 set( FLATBUFFERS_TAG "master" CACHE STRING "Git tag/branch of flatbuffers" )
 
@@ -17,19 +19,19 @@ FetchContent_Declare(
     GIT_TAG        ${FLATBUFFERS_TAG}
 )
 
+if(NOT FBS_FOLDER_PREFIX)
+    set(FBS_FOLDER_PREFIX "Dependencies/flatbuffers")
+endif(NOT FBS_FOLDER_PREFIX)
+
+FetchContent_MakeAvailable(flatbuffers)
+set_target_properties(flatbuffers flatc
+    PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
+set_target_properties(flathash flatsamplebfbs flatsamplebinary flatsampletext
+    PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Examples)
+set_target_properties(flattests
+    PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Tests)
+
 macro(add_fbs_target TARGET SOURCES)
-
-    if(NOT FBS_FOLDER_PREFIX)
-        set(FBS_FOLDER_PREFIX "Dependencies/flatbuffers")
-    endif(NOT FBS_FOLDER_PREFIX)
-
-    FetchContent_MakeAvailable(flatbuffers)
-    set_target_properties(flatbuffers flatc
-        PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
-    set_target_properties(flathash flatsamplebfbs flatsamplebinary flatsampletext
-        PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Examples)
-    set_target_properties(flattests
-        PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Tests)
 
     set(FBS_OPTIONS VERBOSE
         )
@@ -98,9 +100,8 @@ macro(add_fbs_target TARGET SOURCES)
             # Add the rule for each files
             message(STATUS "Add rule to build ${FILENAME}_generated.h from ${SRC}")
             add_custom_command(
-                OUTPUT ${GENERATED_INCLUDE} ${FBS_FLATC_ARGUMENTS}
-                COMMAND ${CMAKE_COMMAND} -E echo "Generate ${FILENAME}_generated.h in ${FBS_GENERATED_INCLUDE_DIR}"
-                COMMAND flatc ${FLATC_SCHEMA_ARGS}
+                OUTPUT ${GENERATED_INCLUDE}
+                COMMAND flatc ${FBS_FLATC_ARGUMENTS}
                 -o ${FBS_GENERATED_INCLUDE_DIR}
                 ${INCLUDE_PARAMS}
                 -c ${SRC}
@@ -116,6 +117,7 @@ macro(add_fbs_target TARGET SOURCES)
 
             # Name of the output binary buffer file
             set(BINARY_SCHEMA ${FBS_BINARY_SCHEMA_DIR}/${FILENAME}.bfbs)
+            message(STATUS "Add rule to build ${FILENAME}.bfbs from ${SRC}")
             add_custom_command(
                 OUTPUT ${BINARY_SCHEMA}
                 COMMAND flatc -b --schema
@@ -133,9 +135,9 @@ macro(add_fbs_target TARGET SOURCES)
 
             # Name of the output binary buffer file
             set(COPY_SCHEMA ${FBS_COPY_TEXT_SCHEMA_DIR}/${FILENAME}.fbs)
+            message(STATUS "Add rule to copy ${FILENAME}.fbs")
             add_custom_command(
                 OUTPUT ${COPY_SCHEMA}
-                COMMAND ${CMAKE_COMMAND} -E echo "Copy ${FILENAME}.fbs in ${FBS_COPY_TEXT_SCHEMA_DIR}"
                 COMMAND ${CMAKE_COMMAND} -E copy ${SRC} ${COPY_SCHEMA}
                 DEPENDS ${FLATC_TARGET} ${SRC} ${FBS_DEPENDENCIES}
                 COMMENT "Copy file ${SRC} to ${COPY_SCHEMA}"
@@ -149,8 +151,11 @@ macro(add_fbs_target TARGET SOURCES)
         message(STATUS "${FBS_TARGET} generated files : ${ALL_GENERATED_FILES}")
     endif(FBS_VERBOSE)
 
+    set(pathadkaozd ${CMAKE_CURRENT_SOURCE_DIR}/yolo.txt)
+
     add_custom_target(${FBS_TARGET}
-                    DEPENDS ${ALL_GENERATED_FILES} flatc ${FBS_DEPENDENCIES}
-                    SOURCES ${FBS_SRCS})
+        DEPENDS flatc ${ALL_GENERATED_FILES} ${FBS_DEPENDENCIES}
+    )
+
 
 endmacro()

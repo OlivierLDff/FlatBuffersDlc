@@ -2,7 +2,7 @@
 
 ## What is it?
 
-This project provide a simple CMake macro to build flatc executable and generate flatbuffers c++ headers.
+This project provide a simple CMake macro to build flatc executable and generate flatbuffers c++ headers. Including the `CMakeLists.txt` also build the library `flatbuffers` that you can link to.
 
 This macro use `FetchContent` cmake's command to download and build [flatbuffers](https://github.com/google/flatbuffers). 
 
