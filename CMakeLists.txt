@@ -19,13 +19,17 @@ FetchContent_Declare(
 
 macro(add_fbs_target TARGET SOURCES)
 
+    if(NOT FBS_FOLDER_PREFIX)
+        set(FBS_FOLDER_PREFIX "Dependencies/flatbuffers")
+    endif(NOT FBS_FOLDER_PREFIX)
+
     FetchContent_MakeAvailable(flatbuffers)
     set_target_properties(flatbuffers flatc
-        PROPERTIES FOLDER Dependencies/flatbuffers)
+        PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
     set_target_properties(flathash flatsamplebfbs flatsamplebinary flatsampletext
-        PROPERTIES FOLDER Dependencies/flatbuffers/Examples)
+        PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Examples)
     set_target_properties(flattests
-        PROPERTIES FOLDER Dependencies/flatbuffers/Tests)
+        PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Tests)
 
     set(FBS_OPTIONS VERBOSE
         )
