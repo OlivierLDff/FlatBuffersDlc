@@ -12,6 +12,8 @@ project("FlatBuffersCMake" VERSION 1.0.0)
 set( FLATBUFFERS_REPOSITORY "https://github.com/google/flatbuffers" CACHE STRING "Repository of flatbuffers" )
 set( FLATBUFFERS_TAG "master" CACHE STRING "Git tag/branch of flatbuffers" )
 
+include(FetchContent)
+
 # flatbuffers
 FetchContent_Declare(
     flatbuffers
