@@ -30,7 +30,7 @@ set_target_properties(flatbuffers flatc
     PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
 set_target_properties(flathash flatsamplebfbs flatsamplebinary flatsampletext
     PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Examples)
-set_target_properties(flattests
+set_target_properties(flattests generated_code
     PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Tests)
 
 macro(add_fbs_target TARGET SOURCES)
