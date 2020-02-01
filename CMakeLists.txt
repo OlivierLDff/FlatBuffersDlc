@@ -5,7 +5,8 @@
 #   Copyright Olivier Le Doeuff 2019
 #
 
-cmake_minimum_required( VERSION 3.11 FATAL_ERROR )
+# MakeAvailable require 3.14. FetchContent 3.11
+cmake_minimum_required( VERSION 3.14 FATAL_ERROR )
 
 project("FlatBuffersCMake" VERSION 1.0.0)
 
@@ -159,8 +160,6 @@ function(add_fbs_target TARGET SOURCES)
     if(FBS_VERBOSE)
         message(STATUS "${FBS_TARGET} generated files : ${ALL_GENERATED_FILES}")
     endif(FBS_VERBOSE)
-
-    set(pathadkaozd ${CMAKE_CURRENT_SOURCE_DIR}/yolo.txt)
 
     add_custom_target(${FBS_TARGET}
         DEPENDS flatc ${ALL_GENERATED_FILES} ${FBS_DEPENDENCIES}
