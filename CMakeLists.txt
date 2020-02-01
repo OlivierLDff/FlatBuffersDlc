@@ -33,7 +33,14 @@ set_target_properties(flathash flatsamplebfbs flatsamplebinary flatsampletext
 set_target_properties(flattests generated_code
     PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Tests)
 
-macro(add_fbs_target TARGET SOURCES)
+function(add_fbs_target TARGET SOURCES)
+
+    if(TARGET flatc)
+        message(STATUS "Found flatc. Configure ${TARGET}")
+    else()
+        message(STATUS "${TARGET} won't be build because flatc isn't present")
+        return()
+    endif()
 
     set(FBS_OPTIONS VERBOSE
         )
@@ -159,5 +166,4 @@ macro(add_fbs_target TARGET SOURCES)
         DEPENDS flatc ${ALL_GENERATED_FILES} ${FBS_DEPENDENCIES}
     )
 
-
-endmacro()
+endfunction()
