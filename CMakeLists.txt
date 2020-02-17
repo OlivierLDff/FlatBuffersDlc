@@ -5,7 +5,8 @@
 #   Copyright Olivier Le Doeuff 2019
 #
 
-cmake_minimum_required( VERSION 3.11 FATAL_ERROR )
+# MakeAvailable require 3.14. FetchContent 3.11
+cmake_minimum_required( VERSION 3.14 FATAL_ERROR )
 
 project("FlatBuffersCMake" VERSION 1.0.0)
 
@@ -30,7 +31,7 @@ set_target_properties(flatbuffers flatc
     PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
 set_target_properties(flathash flatsamplebfbs flatsamplebinary flatsampletext generated_code
     PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Examples)
-set_target_properties(flattests
+set_target_properties(flattests generated_code
     PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Tests)
 
 set(FLATBUFFERS_CMAKE_ROOT ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Root of FlatBuffersCMake that will later be referenced into AddFbsTarget.cmake")
