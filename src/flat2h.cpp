@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     std::string className;
 
     int byte;
-    
+
     std::string guard = "__";
     char str[BUFFER_SIZE];
     char* pos;
@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
     for (const auto& it : namespaces)
         fprintf(output_f, "namespace %s {\n", it.c_str());
 
-    fprintf(output_f, "\nclass %sSchema \n{\npublic:\n", className.c_str());
+    fprintf(output_f, "\nclass %sRc \n{\npublic:\n", className.c_str());
 
     fprintf(output_f, "    static const char* data()\n    {\n");
 

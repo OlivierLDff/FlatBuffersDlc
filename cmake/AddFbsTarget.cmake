@@ -3,7 +3,7 @@ include(CMakeParseArguments)
 function(add_fbs_target TARGET SOURCES)
 
     set(FBS_OPTIONS VERBOSE
-        PACK_SCHEMAS
+        RC_SCHEMAS
         )
     set(FBS_ONE_VALUE_ARG
         GENERATED_INCLUDE_DIR
@@ -21,7 +21,7 @@ function(add_fbs_target TARGET SOURCES)
     set(FBS_TARGET ${TARGET})
     set(FBS_SRCS ${SOURCES})
     set(FBS_VERBOSE ${ARGFBS_VERBOSE})
-    set(FBS_PACK_SCHEMAS ${ARGFBS_PACK_SCHEMAS})
+    set(FBS_RC_SCHEMAS ${ARGFBS_RC_SCHEMAS})
     set(FBS_GENERATED_INCLUDE_DIR ${ARGFBS_GENERATED_INCLUDE_DIR})
     set(FBS_BINARY_SCHEMA_DIR ${ARGFBS_BINARY_SCHEMA_DIR})
     set(FBS_COPY_TEXT_SCHEMA_DIR ${ARGFBS_COPY_TEXT_SCHEMA_DIR})
@@ -36,7 +36,7 @@ function(add_fbs_target TARGET SOURCES)
         message(STATUS "FBS_TARGET                : ${FBS_TARGET}")
         message(STATUS "FBS_SRCS                  : ${FBS_SRCS}")
         message(STATUS "FBS_VERBOSE               : ${FBS_VERBOSE}")
-        message(STATUS "FBS_PACK_SCHEMAS          : ${FBS_PACK_SCHEMAS}")
+        message(STATUS "FBS_RC_SCHEMAS          : ${FBS_RC_SCHEMAS}")
         message(STATUS "FBS_GENERATED_INCLUDE_DIR : ${FBS_GENERATED_INCLUDE_DIR}")
         message(STATUS "FBS_BINARY_SCHEMA_DIR     : ${FBS_BINARY_SCHEMA_DIR}")
         message(STATUS "FBS_COPY_TEXT_SCHEMA_DIR  : ${FBS_COPY_TEXT_SCHEMA_DIR}")
@@ -50,7 +50,7 @@ function(add_fbs_target TARGET SOURCES)
     set(ALL_GENERATED_FILES "")
     set(INCLUDE_PARAMS "")
 
-    if(FBS_PACK_SCHEMAS)
+    if(FBS_RC_SCHEMAS)
         if(NOT TARGET flat2h)
             if(FBS_VERBOSE)
                 message(STATUS "Create flat2h from ${FLATBUFFERS_CMAKE_ROOT}/src/flat2h.cpp")
@@ -96,21 +96,21 @@ function(add_fbs_target TARGET SOURCES)
                 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
             list(APPEND ALL_GENERATED_FILES ${GENERATED_INCLUDE})
 
-            if(FBS_PACK_SCHEMAS)
+            if(FBS_RC_SCHEMAS)
 
                 # Name of the output generated file
-                set(GENERATED_PACK ${FBS_GENERATED_INCLUDE_DIR}/${FILENAME}_pack.h)
+                set(GENERATED_RC ${FBS_GENERATED_INCLUDE_DIR}/${FILENAME}_rc.h)
 
-                message(STATUS "Add rule to build ${GENERATED_PACK} from ${SRC}")
+                message(STATUS "Add rule to build ${GENERATED_RC} from ${SRC}")
                 add_custom_command(
-                    OUTPUT ${GENERATED_PACK}
+                    OUTPUT ${GENERATED_RC}
                     COMMAND flat2h
                     -i ${SRC}
-                    -o ${GENERATED_PACK}
+                    -o ${GENERATED_RC}
                     DEPENDS flat2h ${SRC} ${FBS_DEPENDENCIES}
-                    COMMENT "Generate ${GENERATED_PACK} from ${SRC}"
+                    COMMENT "Generate ${GENERATED_RC} from ${SRC}"
                     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
-                list(APPEND ALL_GENERATED_FILES ${GENERATED_PACK})
+                list(APPEND ALL_GENERATED_FILES ${GENERATED_RC})
             endif()
 
         endif() # (NOT ${FBS_GENERATED_INCLUDE_DIR} STREQUAL "")
