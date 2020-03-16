@@ -50,20 +50,6 @@ function(add_fbs_target TARGET SOURCES)
     set(ALL_GENERATED_FILES "")
     set(INCLUDE_PARAMS "")
 
-    if(FBS_RC_SCHEMAS)
-        if(NOT TARGET flat2h)
-            if(FBS_VERBOSE)
-                message(STATUS "Create flat2h from ${FLATBUFFERS_CMAKE_ROOT}/src/flat2h.cpp")
-            endif()
-            add_executable(flat2h ${FLATBUFFERS_CMAKE_ROOT}/src/flat2h.cpp)
-            set_target_properties(flat2h
-                PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
-            if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-                target_compile_definitions(flat2h PRIVATE -D_CRT_SECURE_NO_WARNINGS)
-            endif()
-        endif()
-    endif()
-
     # Generate the include file param
     # The form is -I path/to/dir1 -I path/to/dir2 etc...
     foreach (INCLUDE_DIR ${FBS_INCLUDE_DIR})

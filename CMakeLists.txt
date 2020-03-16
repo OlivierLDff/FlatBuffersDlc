@@ -23,8 +23,8 @@ FetchContent_Declare(
 )
 
 if(NOT FBS_FOLDER_PREFIX)
-    set(FBS_FOLDER_PREFIX "Dependencies/flatbuffers")
-endif(NOT FBS_FOLDER_PREFIX)
+    set(FBS_FOLDER_PREFIX "Dependencies/flatbuffers" CACHE STRING "")
+endif()
 
 FetchContent_MakeAvailable(flatbuffers)
 set_target_properties(flatbuffers flatc
@@ -33,6 +33,16 @@ set_target_properties(flathash flatsamplebfbs flatsamplebinary flatsampletext ge
     PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Examples)
 set_target_properties(flattests generated_code
     PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Tests)
+
+# Create flat2h
+add_executable(flat2h ${FLATBUFFERS_CMAKE_ROOT}/src/flat2h.cpp)
+if(FBS_FOLDER_PREFIX AND NOT ${FBS_FOLDER_PREFIX} STREQUAL "")
+    set_target_properties(flat2h
+        PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
+endif()
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+    target_compile_definitions(flat2h PRIVATE -D_CRT_SECURE_NO_WARNINGS)
+endif()
 
 set(FLATBUFFERS_CMAKE_ROOT ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Root of FlatBuffersCMake that will later be referenced into AddFbsTarget.cmake")
 
