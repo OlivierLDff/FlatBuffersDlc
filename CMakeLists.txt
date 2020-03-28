@@ -73,5 +73,12 @@ if(FBS_IS_HOST_COMPILING AND FLATBUFFERS_BUILD_FLATC)
   endif()
 endif()
 
+add_library(flatbuffers_dlc INTERFACE)
+target_compile_features(flatbuffers_dlc INTERFACE cxx_std_11)
+target_sources(flatbuffers_dlc INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/flatbuffers/json_parser.h)
+target_include_directories(flatbuffers_dlc INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_link_libraries(flatbuffers_dlc INTERFACE flatbuffers)
+
 # Include the function
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/AddFbsTarget.cmake)

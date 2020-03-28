@@ -136,6 +136,14 @@ int main(int argc, char *argv[])
         className = m[1].str();
     }
 
+    guard += "FLATBUFFERS_RC_";
+    {
+        std::string upper(className);
+        for (auto& c : upper) c = toupper(c);
+        guard += upper;
+        guard += "_";
+    }
+
     for (const auto& it : namespaces)
     {
         std::string upper(it);
@@ -143,13 +151,7 @@ int main(int argc, char *argv[])
         guard += upper;
         guard += "_";
     }
-    {
-        std::string upper(className);
-        for (auto& c : upper) c = toupper(c);
-        guard += upper;
-        guard += "_";
-    }
-    guard += "H__";
+    guard += "H_";
 
     fseek(input_f, 0, SEEK_SET);
     fprintf(output_f, "#ifndef %s\n", guard.c_str());
