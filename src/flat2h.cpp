@@ -14,7 +14,9 @@ static void print_help(const char* name)
     printf("USAGE: %s -i <input> -o <output> -n <name> -d -z\n\n", name);
     printf("OPTIONS:\n");
     printf("    -i <input>      Specify input file\n");
-    printf("    -o <output>     Specify output file\n");
+    printf("    -o <output>     Specify output folder\n");
+    printf("    --filename-rc-suffix    <suffix>  Specify suffix for the file. Default \"_rc\"\n");
+    printf("    --filename-ext          <ext>     Specify extension for the file. Default \"h\"\n");
 }
 
 int main(int argc, char *argv[])
@@ -25,11 +27,15 @@ int main(int argc, char *argv[])
     FILE* input_f = NULL;
     FILE* output_f = NULL;
     const char* input = NULL;
-    const char* output = NULL;
+    const char* outputFolder = NULL;
+    std::string output;
     std::string s;
     std::smatch m;
     std::regex e("([\\w-]+)\\.fbs");
     std::string className;
+
+    std::string suffix = "_rc";
+    std::string ext = "h";
 
     int byte;
 
@@ -63,7 +69,25 @@ int main(int argc, char *argv[])
                 printf("Missing argument for -o\n");
                 return EXIT_FAILURE;
             }
-            output = argv[arg];
+            outputFolder = argv[arg];
+        }
+        else if (strcmp(argv[arg], "--filename-ext") == 0)
+        {
+            if (++arg >= argc)
+            {
+                printf("Missing argument for --filename-ext\n");
+                return EXIT_FAILURE;
+            }
+            ext = argv[arg];
+        }
+        else if (strcmp(argv[arg], "--filename-rc-suffix") == 0)
+        {
+            if (++arg >= argc)
+            {
+                printf("Missing argument for --filename-rc-suffix\n");
+                return EXIT_FAILURE;
+            }
+            suffix = argv[arg];
         }
         else
         {
@@ -78,9 +102,9 @@ int main(int argc, char *argv[])
         goto exit;
     }
 
-    if (!output)
+    if (!outputFolder)
     {
-        printf("No output file given\n");
+        printf("No output folder given\n");
         goto exit;
     }
 
@@ -89,14 +113,6 @@ int main(int argc, char *argv[])
     if (!input_f)
     {
         printf("Failed to open input file\n");
-        goto exit;
-    }
-
-    output_f = fopen(output, "w");
-
-    if (!output_f)
-    {
-        printf("Failed to open output file\n");
         goto exit;
     }
 
@@ -134,6 +150,15 @@ int main(int argc, char *argv[])
             goto exit;
         }
         className = m[1].str();
+    }
+
+    output = std::string(outputFolder) + "/" + className + suffix + "." + ext;
+    output_f = fopen(output.c_str(), "w");
+
+    if (!output_f)
+    {
+        printf("Failed to open output file %s\n", output.c_str());
+        goto exit;
     }
 
     guard += "FLATBUFFERS_RC_";
