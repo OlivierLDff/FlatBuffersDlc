@@ -38,6 +38,12 @@ endif()
 set(FLATBUFFERS_INSTALL OFF CACHE BOOL "Enable the installation of targets.")
 set(FLATBUFFERS_BUILD_TESTS OFF CACHE BOOL "Enable the installation of targets.")
 set(FLATBUFFERS_BUILD_FLATHASH OFF CACHE BOOL "Enable the build of flathash")
+set(FLATBUFFERS_ENABLE_PCH ON CACHE BOOL
+       "Enable precompile headers support for 'flatbuffers' and 'flatc'. \"
+        Only work if CMake support 'target_precompile_headers'. \"
+        Only work if CMake supports 'target_precompile_headers'. \"
+        This can speed up compilation time."
+       )
 
 FetchContent_MakeAvailable(flatbuffers)
 
