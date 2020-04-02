@@ -26,8 +26,9 @@ class JsonParser
 private:
     Parser _parser;
     bool _initialized = false;
+    bool _strictJson = true;
 
-public:
+private:
     bool initializeParser()
     {
         _initialized = true;
@@ -46,6 +47,17 @@ public:
         }
         return true;
     }
+public:
+    bool strictJson() const
+    {
+        return _strictJson;
+    }
+
+    void setStrictJson(const bool strictJson)
+    {
+        _strictJson = strictJson;
+    }
+
     bool parse(const char* json)
     {
         if(!_initialized)
@@ -81,7 +93,8 @@ public:
                 return false;
             _initialized = true;
         }
-
+        _parser.opts.strict_json = _strictJson;
+        
         return GenerateText(_parser, buffer, &output);
     }
 

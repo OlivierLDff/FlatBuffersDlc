@@ -6,6 +6,7 @@ function(add_fbs_target TARGET SOURCES)
     RC_SCHEMAS
     REFLECT_NAMES
     GEN_NAME_STRINGS
+    GEN_MUTABLE
     SCOPED_ENUMS
     )
   set(FBS_ONE_VALUE_ARG
@@ -43,6 +44,9 @@ function(add_fbs_target TARGET SOURCES)
     endif()
     if(ARGFBS_SCOPED_ENUMS)
       set(FBS_SCOPED_ENUMS --scoped-enums)
+    endif()
+    if(ARGFBS_GEN_MUTABLE)
+      set(FBS_GEN_MUTABLE --gen-mutable)
     endif()
 
     if(ARGFBS_FILENAME_EXT)
@@ -115,6 +119,7 @@ function(add_fbs_target TARGET SOURCES)
           ${FBS_FILENAME_SUFFIX}
           ${FBS_REFLECT_NAMES}
           ${FBS_GEN_NAME_STRINGS}
+          ${FBS_GEN_MUTABLE}
           ${FBS_SCOPED_ENUMS}
           DEPENDS flatc ${SRC} ${FBS_DEPENDENCIES}
           COMMENT "Generate ${GENERATED_INCLUDE} from ${SRC}"
