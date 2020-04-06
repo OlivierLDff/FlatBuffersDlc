@@ -94,11 +94,11 @@ public:
             _initialized = true;
         }
         _parser.opts.strict_json = _strictJson;
-        
+
         return GenerateText(_parser, buffer, &output);
     }
 
-    bool generateTextFromTable(const flatbuffers::Table* table, std::string& output)
+    /*bool generateTextFromTable(const flatbuffers::Table* table, std::string& output)
     {
         if (!_initialized)
         {
@@ -107,8 +107,8 @@ public:
             _initialized = true;
         }
 
-        return GenerateText(_parser, table.getD, &output);
-    }
+        return false;//GenerateText(_parser, table.getD, &output);
+    }*/
 };
 
 }
