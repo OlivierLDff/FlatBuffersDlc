@@ -19,6 +19,29 @@ static void print_help(const char* name)
     printf("    --filename-ext          <ext>     Specify extension for the file. Default \"h\"\n");
 }
 
+static void fprintchar(FILE* f, unsigned char theChar) {
+
+    switch (theChar) {
+
+        case '\n':
+            fprintf(f, "'\\n'");
+            break;
+        case '\r':
+            fprintf(f, "'\\r'");
+            break;
+        case '\t':
+            fprintf(f, "'\\t'");
+            break;
+        default:
+            if ((theChar < 0x20) || (theChar > 0x7f)) {
+                fprintf(f, "'\\%03o'", (unsigned char)theChar);
+            } else {
+                fprintf(f, "'%c'", theChar);
+            }
+        break;
+   }
+}
+
 int main(int argc, char *argv[])
 {
     int result = EXIT_FAILURE;
@@ -189,16 +212,18 @@ int main(int argc, char *argv[])
 
     fprintf(output_f, "    static const char* data()\n    {\n");
 
-    fprintf(output_f, "        static const char d[] = \n        {\n        ");
+    fprintf(output_f, "        static const char d[] = \n        {\n            ");
     while ((byte = getc(input_f)) != EOF)
     {
-        if (i != 0) fprintf(output_f, ", ");
-        fprintf(output_f, "0x%02X", byte);
+        fprintchar(output_f, byte);
         ++i;
+        fprintf(output_f, ",");
+        if(byte == '\n')
+            fprintf(output_f, "\n            ");
     }
 
-    if (i != 0) fprintf(output_f, ", ");
-    fprintf(output_f, "0x00");
+    if (i == 0) fprintf(output_f, "\n            ");
+    fprintf(output_f, "'\\0'");
     ++i;
 
     fprintf(output_f, "\n        };\n");
