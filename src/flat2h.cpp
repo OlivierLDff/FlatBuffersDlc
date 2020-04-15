@@ -238,13 +238,6 @@ int main(int argc, char *argv[])
     fprintf(output_f, "%s.fbs\"", className.c_str());
     fprintf(output_f, ";\n    }\n");
 
-    fprintf(output_f, "    static const char* directory()\n    {\n");
-    fprintf(output_f, "        return \"");
-
-    for (const auto& it : namespaces)
-        fprintf(output_f, "%s/", it.c_str());
-    fprintf(output_f, "\";\n    }\n");
-
     fprintf(output_f, "};\n\n");
 
     for (const auto& it : namespaces)

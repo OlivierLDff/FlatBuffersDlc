@@ -33,7 +33,7 @@ public:
     virtual bool isValid() const = 0;
     virtual void reset() = 0;
 
-    virtual bool generateText(const uint8_t* buffer, std::string& output) = 0;
+    virtual bool generateText(const void* flatbuffer, std::string& output) = 0;
 };
 
 /**
@@ -48,8 +48,13 @@ template<class T, class... Types>
 class TJsonParser : public JsonParser
 {
     static_assert(sizeof...(Types) >= 1, "TJsonParser required at least 1 generated resource class to parser T");
+public:
+    TJsonParser() : _parser(std::make_unique<Parser>())
+    {
+    }
+
 private:
-    Parser _parser;
+    std::unique_ptr<Parser> _parser;
     bool _initialized = false;
     bool _strictJson = true;
     int _indentStep = -1;
@@ -58,20 +63,25 @@ private:
 private:
     bool initializeParser()
     {
-        _initialized = true;
+        if (_initialized)
+            return true;
 
         constexpr auto size = sizeof...(Types);
 
-        static const char* directory[size] = { Types::directory()... };
         static const char* data[size] = { Types::data()... };
         static const char* path[size] = { Types::path()... };
 
-        const char* includePaths[] = { directory[0], nullptr };
         for (auto i = 0; i < size; ++i)
         {
-            if (!_parser.Parse(data[i], includePaths, path[i]))
+            if (!_parser->Parse(data[i], nullptr, path[i]))
+            {
+                // This flag mean the parser will never be able to work again, it need a fix in the code
+                // Program should crash and parser need to be fixed by developer !!!
+                assert(false);
                 return false;
+            }
         }
+        _initialized = true;
         return true;
     }
 public:
@@ -97,31 +107,21 @@ public:
 
     bool parse(const char* json) override final
     {
-        if(!_initialized)
-        {
-            if (!initializeParser())
-                return false;
-            _initialized = true;
-        }
-
-        constexpr std::size_t size = sizeof...(Types);
-        static const char* directory[size] = { Types::directory()... };
-        const char* includePaths[] = { directory[0], nullptr };
-
-        _parser.opts.strict_json = _strictJson;
-        if(!_parser.Parse(json, includePaths))
-        {
-            // When an error occured, it is safer to reinitialized the parser
-            _initialized = true;
+        // Init parser
+        if (!initializeParser())
             return false;
-        }
-        return true;
+
+        // Set parser options
+        _parser->opts.strict_json = _strictJson;
+
+        // Parse the json string
+        return _parser->Parse(json, nullptr);
     }
 
-    std::string error() const override final { return _parser.error_; }
+    std::string error() const override final { return _parser->error_; }
 
-    const std::uint8_t* buffer() const override final { return _parser.builder_.GetBufferPointer(); }
-    std::size_t size() const override final { return _parser.builder_.GetSize(); }
+    const std::uint8_t* buffer() const override final { return _parser->builder_.GetBufferPointer(); }
+    std::size_t size() const override final { return _parser->builder_.GetSize(); }
 
 
     const void* root() const override final { return buffer() ? flatbuffers::GetRoot<T>(buffer()) : nullptr; }
@@ -131,28 +131,37 @@ public:
         return Verifier(buffer(), size()).VerifyBuffer<T>(nullptr);
     }
 
-    void reset() override { _initialized = false; }
+    void reset() override final { _parser = std::make_unique<Parser>(); _initialized = false; }
 
-    bool generateText(const std::uint8_t* buffer, std::string& output) override final
+    bool generateText(const void* flatbuffer, std::string& output) override final
     {
-        if (!_initialized)
-        {
-            if (!initializeParser())
-                return false;
-            _initialized = true;
-        }
-        _parser.opts.strict_json = _strictJson;
-        _parser.opts.indent_step = _indentStep;
+        // Init parser
+        if (!initializeParser())
+            return false;
 
-        return GenerateText(_parser, buffer, &output);
+        // Set parser options
+        _parser->opts.strict_json = _strictJson;
+        _parser->opts.indent_step = _indentStep;
+
+        // Generate text
+        return GenerateText(*_parser, flatbuffer, &output);
     }
 
 public:
-    static std::shared_ptr<TJsonParser<T, Types ...>> get() { return _instance; }
+    static std::shared_ptr<TJsonParser<T, Types ...>> make() { return std::make_shared<TJsonParser<T, Types ...>>(); }
+    static std::shared_ptr<TJsonParser<T, Types ...>> get()
+    {
+        // Always return an instance that isn't used in another thread or another context.
+        // This will avoid thread safe issue
+        if(_instance.use_count() > 1)
+            _instance = make();
+        return _instance;
+    }
+
 };
 
 template<class T, class... Types>
-std::shared_ptr<TJsonParser<T, Types ...>> TJsonParser<T, Types ...>::_instance = std::make_shared<TJsonParser<T, Types ...>>();
+std::shared_ptr<TJsonParser<T, Types ...>> TJsonParser<T, Types ...>::_instance = TJsonParser<T, Types ... >::make();
 
 }
 
