@@ -47,7 +47,7 @@ public:
 template<class T, class... Types>
 class TJsonParser : public JsonParser
 {
-    static_assert(sizeof...(Types), "TJsonParser required at least 1 generated resource class to parser T");
+    static_assert(sizeof...(Types) >= 1, "TJsonParser required at least 1 generated resource class to parser T");
 private:
     Parser _parser;
     bool _initialized = false;
