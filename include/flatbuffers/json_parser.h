@@ -20,6 +20,8 @@ public:
 
     virtual bool strictJson() const = 0;
     virtual void setStrictJson(const bool strictJson) = 0;
+    virtual int indentStep() const = 0;
+    virtual void setIndentStep(const int indentStep) = 0;
 
     virtual bool parse(const char* json) = 0;
     virtual std::string error() const = 0;
@@ -50,6 +52,7 @@ private:
     Parser _parser;
     bool _initialized = false;
     bool _strictJson = true;
+    int _indentStep = -1;
     static std::shared_ptr<TJsonParser<T, Types ...>> _instance;
 
 private:
@@ -82,6 +85,16 @@ public:
         _strictJson = strictJson;
     }
 
+    int indentStep() const override final
+    {
+        return _indentStep;
+    }
+
+    void setIndentStep(const int indentStep) override final
+    {
+        _indentStep = indentStep < 0 ? -1 : indentStep;
+    }
+
     bool parse(const char* json) override final
     {
         if(!_initialized)
@@ -95,6 +108,7 @@ public:
         static const char* directory[size] = { Types::directory()... };
         const char* includePaths[] = { directory[0], nullptr };
 
+        _parser.opts.strict_json = _strictJson;
         if(!_parser.Parse(json, includePaths))
         {
             // When an error occured, it is safer to reinitialized the parser
@@ -128,6 +142,7 @@ public:
             _initialized = true;
         }
         _parser.opts.strict_json = _strictJson;
+        _parser.opts.indent_step = _indentStep;
 
         return GenerateText(_parser, buffer, &output);
     }
