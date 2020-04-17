@@ -5,6 +5,7 @@ function(add_fbs_target TARGET SOURCES)
   set(FBS_OPTIONS VERBOSE
     RC_SCHEMAS
     REFLECT_NAMES
+    GEN_OBJECT_API
     GEN_NAME_STRINGS
     GEN_MUTABLE
     SCOPED_ENUMS
@@ -38,6 +39,9 @@ function(add_fbs_target TARGET SOURCES)
 
     if(ARGFBS_REFLECT_NAMES)
       set(FBS_REFLECT_NAMES --reflect-names)
+    endif()
+    if(ARGFBS_GEN_OBJECT_API)
+      set(FBS_GEN_OBJECT_API --gen-object-api)
     endif()
     if(ARGFBS_GEN_NAME_STRINGS)
       set(FBS_GEN_NAME_STRINGS --gen-name-strings)
@@ -120,6 +124,7 @@ function(add_fbs_target TARGET SOURCES)
           ${FBS_REFLECT_NAMES}
           ${FBS_GEN_NAME_STRINGS}
           ${FBS_GEN_MUTABLE}
+          ${FBS_GEN_OBJECT_API}
           ${FBS_SCOPED_ENUMS}
           DEPENDS flatc ${SRC} ${FBS_DEPENDENCIES}
           COMMENT "Generate ${GENERATED_INCLUDE} from ${SRC}"
