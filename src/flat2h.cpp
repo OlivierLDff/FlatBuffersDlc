@@ -32,6 +32,9 @@ static void fprintchar(FILE* f, unsigned char theChar) {
         case '\t':
             fprintf(f, "'\\t'");
             break;
+        case '\'':
+            fprintf(f, "'\\''");
+            break;
         default:
             if ((theChar < 0x20) || (theChar > 0x7f)) {
                 fprintf(f, "'\\%03o'", (unsigned char)theChar);
