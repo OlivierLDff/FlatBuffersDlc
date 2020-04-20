@@ -57,6 +57,7 @@ private:
     std::unique_ptr<Parser> _parser;
     bool _initialized = false;
     bool _strictJson = true;
+    bool _outputDefaultValues = true;
     int _indentStep = -1;
     static std::shared_ptr<TJsonParser<T, Types ...>> _instance;
 
@@ -105,6 +106,16 @@ public:
         _indentStep = indentStep < 0 ? -1 : indentStep;
     }
 
+    bool outputDefaultValues() const
+    {
+        return _outputDefaultValues;
+    }
+
+    void setOutputDefaultValues(const bool outputDefaultValues)
+    {
+        _outputDefaultValues = outputDefaultValues;
+    }
+
     bool parse(const char* json) override final
     {
         // Init parser
@@ -142,6 +153,7 @@ public:
         // Set parser options
         _parser->opts.strict_json = _strictJson;
         _parser->opts.indent_step = _indentStep;
+        _parser->opts.output_default_scalars_in_json = _outputDefaultValues;
 
         // Generate text
         return GenerateText(*_parser, flatbuffer, &output);
