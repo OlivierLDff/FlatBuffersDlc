@@ -145,12 +145,13 @@ private:
         static const char* data[size] = {Types::data()...};
         static const char* path[size] = {Types::path()...};
 
-        for(auto i = 0; i < size; ++i)
+        for(std::size_t i = 0; i < size; ++i)
         {
             if(!_parser->Parse(data[i], nullptr, path[i]))
             {
                 // This flag mean the parser will never be able to work again, it need a fix in the code
                 // Program should crash and parser need to be fixed by developer !!!
+                // Check value of _parser.error_
                 assert(false);
                 return false;
             }
