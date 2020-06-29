@@ -20,10 +20,24 @@ public:
 
     virtual bool strictJson() const = 0;
     virtual void setStrictJson(const bool strictJson) = 0;
+    virtual bool skipUnexpectedFields() const = 0;
+    virtual void setSkipUnexpectedFields(const bool skipUnexpectedFields) = 0;
     virtual int indentStep() const = 0;
     virtual void setIndentStep(const int indentStep) = 0;
     virtual bool outputDefaultValues() const = 0;
     virtual void setOutputDefaultValues(const bool outputDefaultValues) = 0;
+
+    void setDefaultWriteOptions()
+    {
+        setStrictJson(true);
+        setIndentStep(2);
+        setOutputDefaultValues(true);
+    }
+    void setDefaultReadOptions()
+    {
+        setStrictJson(false);
+        setSkipUnexpectedFields(true);
+    }
 
     virtual bool parse(const char* json) = 0;
     virtual std::string error() const = 0;
@@ -131,7 +145,8 @@ private:
     bool _initialized = false;
     bool _strictJson = true;
     bool _outputDefaultValues = true;
-    int _indentStep = -1;
+    bool _skipUnexpectedFields = true;
+    int _indentStep = 2;
     static std::shared_ptr<TJsonParser<T, Types...>> _instance;
 
 private:
@@ -163,16 +178,22 @@ private:
 public:
     bool strictJson() const override final { return _strictJson; }
 
-    void setStrictJson(const bool strictJson) override final
+    void setStrictJson(const bool value) override final { _strictJson = value; }
+
+    bool skipUnexpectedFields() const override final
     {
-        _strictJson = strictJson;
+        return _skipUnexpectedFields;
+    }
+    void setSkipUnexpectedFields(const bool value) override
+    {
+        _skipUnexpectedFields = value;
     }
 
     int indentStep() const override final { return _indentStep; }
 
-    void setIndentStep(const int indentStep) override final
+    void setIndentStep(const int value) override final
     {
-        _indentStep = indentStep < 0 ? -1 : indentStep;
+        _indentStep = value < 0 ? -1 : value;
     }
 
     bool outputDefaultValues() const override final
@@ -180,9 +201,9 @@ public:
         return _outputDefaultValues;
     }
 
-    void setOutputDefaultValues(const bool outputDefaultValues) override final
+    void setOutputDefaultValues(const bool value) override final
     {
-        _outputDefaultValues = outputDefaultValues;
+        _outputDefaultValues = value;
     }
 
     bool parse(const char* json) override final
@@ -193,6 +214,7 @@ public:
 
         // Set parser options
         _parser->opts.strict_json = _strictJson;
+        _parser->opts.skip_unexpected_fields_in_json = true;
 
         // Parse the json string
         return _parser->Parse(json, nullptr);
