@@ -1,0 +1,33 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  Build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            flat2h_exe: flat2h
+          - os: windows-latest
+            flat2h_exe: Release/flat2h.exe
+          - os: macos-latest
+            flat2h_exe: flat2h
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure
+        run: |
+          mkdir -p build
+          cmake -DCMAKE_BUILD_TYPE="Release" -B build -S .
+        shell: bash
+
+      - name: Build flat2h
+        run: cmake --build build --target "flat2h" --config "Release" -j
+
+      - name: Upload flat2h
+        uses: actions/upload-artifact@v2
+        with:
+          name: flat2h (${{ matrix.os }})
+          path: build/${{matrix.flat2h_exe}}

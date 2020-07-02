@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 project("FlatBuffersDlc" VERSION 1.0.0)
 
-set(FLATBUFFERS_REPOSITORY "https://github.com/OlivierLDff/flatbuffers" CACHE STRING "Repository of flatbuffers")
+set(FLATBUFFERS_REPOSITORY "https://github.com/google/flatbuffers" CACHE STRING "Repository of flatbuffers")
 set(FLATBUFFERS_TAG "master" CACHE STRING "Git tag/branch of flatbuffers")
 
 include(FetchContent)
@@ -70,17 +70,18 @@ endif()
 # Create flat2h
 if(FBS_IS_HOST_COMPILING AND FLATBUFFERS_BUILD_FLATC)
   add_executable(flat2h ${CMAKE_CURRENT_SOURCE_DIR}/src/flat2h.cpp)
+  target_compile_features(flat2h PRIVATE cxx_std_17)
   if(FBS_FOLDER_PREFIX AND NOT ${FBS_FOLDER_PREFIX} STREQUAL "")
     set_target_properties(flat2h
       PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
   endif()
-  if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+  if(MSVC)
     target_compile_definitions(flat2h PRIVATE -D_CRT_SECURE_NO_WARNINGS)
   endif()
 endif()
 
 add_library(flatbuffers_dlc INTERFACE)
-target_compile_features(flatbuffers_dlc INTERFACE cxx_std_11)
+target_compile_features(flatbuffers_dlc INTERFACE cxx_std_14)
 target_sources(flatbuffers_dlc INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/flatbuffers/json_parser.h)
 target_include_directories(flatbuffers_dlc INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
