@@ -20,7 +20,7 @@ FetchContent_Declare(
   flatbuffers
   GIT_REPOSITORY ${FLATBUFFERS_REPOSITORY}
   GIT_TAG        ${FLATBUFFERS_TAG}
-  GIT_SHALLOW    1
+  GIT_SHALLOW    200
   )
 
 if(NOT FBS_FOLDER_PREFIX)

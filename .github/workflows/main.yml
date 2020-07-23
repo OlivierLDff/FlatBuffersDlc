@@ -20,7 +20,7 @@ jobs:
       - name: Configure
         run: |
           mkdir -p build
-          cmake -DCMAKE_BUILD_TYPE="Release" -B build -S .
+          cmake -DCMAKE_BUILD_TYPE="Release" -DFETCHCONTENT_UPDATES_DISCONNECTED=ON -B build -S .
         shell: bash
 
       - name: Build flat2h
