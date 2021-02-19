@@ -112,7 +112,9 @@ function(add_fbs_target TARGET SOURCES)
         set(GENERATED_INCLUDE ${FBS_GENERATED_INCLUDE_DIR}/${FILENAME}${ARGFBS_FILENAME_SUFFIX}.${ARGFBS_FILENAME_EXT})
 
         # Add the rule for each files
-        message(STATUS "Add rule to build ${FILENAME}${ARGFBS_FILENAME_SUFFIX}.${ARGFBS_FILENAME_EXT} from ${SRC}")
+        if(FBS_VERBOSE)
+          message(STATUS "Add rule to build ${FILENAME}${ARGFBS_FILENAME_SUFFIX}.${ARGFBS_FILENAME_EXT} from ${SRC}")
+        endif()
         add_custom_command(
           OUTPUT ${GENERATED_INCLUDE}
           COMMAND flatc ${FBS_FLATC_ARGUMENTS}
@@ -136,7 +138,9 @@ function(add_fbs_target TARGET SOURCES)
           # Name of the output generated file
           set(GENERATED_RC ${FBS_GENERATED_INCLUDE_DIR}/${FILENAME}${ARGFBS_FILENAME_RC_SUFFIX}.${ARGFBS_FILENAME_EXT})
 
-          message(STATUS "Add rule to build ${GENERATED_RC} from ${SRC}")
+          if(FBS_VERBOSE)
+            message(STATUS "Add rule to build ${GENERATED_RC} from ${SRC}")
+          endif()
           add_custom_command(
             OUTPUT ${GENERATED_RC}
             COMMAND flat2h
@@ -157,7 +161,9 @@ function(add_fbs_target TARGET SOURCES)
 
           # Name of the output binary buffer file
           set(BINARY_SCHEMA ${FBS_BINARY_SCHEMA_DIR}/${FILENAME}.bfbs)
-          message(STATUS "Add rule to build ${FILENAME}.bfbs from ${SRC}")
+          if(FBS_VERBOSE)
+            message(STATUS "Add rule to build ${FILENAME}.bfbs from ${SRC}")
+          endif()
           add_custom_command(
             OUTPUT ${BINARY_SCHEMA}
             COMMAND flatc -b --schema
@@ -175,7 +181,9 @@ function(add_fbs_target TARGET SOURCES)
 
             # Name of the output binary buffer file
             set(COPY_SCHEMA ${FBS_COPY_TEXT_SCHEMA_DIR}/${FILENAME}.fbs)
-            message(STATUS "Add rule to copy ${FILENAME}.fbs")
+            if(FBS_VERBOSE)
+              message(STATUS "Add rule to copy ${FILENAME}.fbs")
+            endif()
             add_custom_command(
               OUTPUT ${COPY_SCHEMA}
               COMMAND ${CMAKE_COMMAND} -E copy ${SRC} ${COPY_SCHEMA}
