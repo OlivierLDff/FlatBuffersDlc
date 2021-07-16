@@ -133,6 +133,13 @@ int main(int /*argc*/, const char * /*argv*/[]) {
 
 ```
 
+**GEN_SHARED_PTR**
+
+If flag `GEN_SHARED_PTR` is set, then `--cpp-ptr-type "std::shared_ptr"` will be appended to `flatc` args.
+Default is `std::unique_ptr`.
+More information in [Using different string type.](https://google.github.io/flatbuffers/flatbuffers_guide_use_cpp.html#autotoc_md44)
+
+
 **DEPENDENCIES**
 
 Add dependencies to the target `Target`.

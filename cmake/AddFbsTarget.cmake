@@ -8,6 +8,7 @@ function(add_fbs_target TARGET SOURCES)
     GEN_OBJECT_API
     GEN_NAME_STRINGS
     GEN_MUTABLE
+    GEN_SHARED_PTR
     SCOPED_ENUMS
     )
   set(FBS_ONE_VALUE_ARG
@@ -51,6 +52,9 @@ function(add_fbs_target TARGET SOURCES)
     endif()
     if(ARGFBS_GEN_MUTABLE)
       set(FBS_GEN_MUTABLE --gen-mutable)
+    endif()
+    if(ARGFBS_GEN_SHARED_PTR)
+      set(FBS_GEN_SHARED_PTR --cpp-ptr-type \"std::shared_ptr\")
     endif()
 
     if(ARGFBS_FILENAME_EXT)
@@ -128,6 +132,7 @@ function(add_fbs_target TARGET SOURCES)
           ${FBS_GEN_MUTABLE}
           ${FBS_GEN_OBJECT_API}
           ${FBS_SCOPED_ENUMS}
+          ${FBS_GEN_SHARED_PTR}
           DEPENDS flatc ${SRC} ${FBS_DEPENDENCIES}
           COMMENT "Generate ${GENERATED_INCLUDE} from ${SRC}"
           WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
