@@ -8,7 +8,7 @@
 # MakeAvailable require 3.14. FetchContent 3.11
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
-project("FlatBuffersDlc" VERSION 1.0.0)
+project("FlatBuffersDlc" VERSION 1.1.0)
 
 set(FLATBUFFERS_REPOSITORY "https://github.com/google/flatbuffers" CACHE STRING "Repository of flatbuffers")
 set(FLATBUFFERS_TAG "master" CACHE STRING "Git tag/branch of flatbuffers")
