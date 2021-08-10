@@ -133,12 +133,36 @@ int main(int /*argc*/, const char * /*argv*/[]) {
 
 ```
 
+**GEN_OBJECT_API**
+
+Generate an additional object-based API. This API is more convenient for object construction and mutation than the base API, at the cost of efficiency (object allocation). Recommended only to be used if other options are insufficient.
+Associated flag is `--gen-object-api`.
+
+**GEN_NAME_STRINGS**
+
+Generate type name functions for C++.
+Associated flag is `--gen-name-strings`.
+
+**GEN_MUTABLE**
+
+Generate additional non-const accessors for mutating FlatBuffers in-place.
+Associated flag is `--gen-mutable`.
+
+**GEN_COMPARE**
+
+Generate operator== for object-based API types.
+Associated flag is `--gen-compare`.
+
 **GEN_SHARED_PTR**
 
 If flag `GEN_SHARED_PTR` is set, then `--cpp-ptr-type "std::shared_ptr"` will be appended to `flatc` args.
 Default is `std::unique_ptr`.
 More information in [Using different string type.](https://google.github.io/flatbuffers/flatbuffers_guide_use_cpp.html#autotoc_md44)
 
+**SCOPED_ENUMS**
+
+Use C++11 style scoped and strongly typed enums in generated C++. This also implies --no-prefix.
+Associated flag is `--scoped-enums`.
 
 **DEPENDENCIES**
 
