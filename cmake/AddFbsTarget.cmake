@@ -8,6 +8,7 @@ function(add_fbs_target TARGET SOURCES)
     GEN_OBJECT_API
     GEN_NAME_STRINGS
     GEN_MUTABLE
+    GEN_COMPARE
     GEN_SHARED_PTR
     SCOPED_ENUMS
     )
@@ -52,6 +53,9 @@ function(add_fbs_target TARGET SOURCES)
     endif()
     if(ARGFBS_GEN_MUTABLE)
       set(FBS_GEN_MUTABLE --gen-mutable)
+    endif()
+    if(ARGFBS_GEN_COMPARE)
+      set(FBS_GEN_COMPARE --gen-compare)
     endif()
     if(ARGFBS_GEN_SHARED_PTR)
       set(FBS_GEN_SHARED_PTR --cpp-ptr-type \"std::shared_ptr\")
@@ -130,6 +134,7 @@ function(add_fbs_target TARGET SOURCES)
           ${FBS_REFLECT_NAMES}
           ${FBS_GEN_NAME_STRINGS}
           ${FBS_GEN_MUTABLE}
+          ${FBS_GEN_COMPARE}
           ${FBS_GEN_OBJECT_API}
           ${FBS_SCOPED_ENUMS}
           ${FBS_GEN_SHARED_PTR}
