@@ -11,16 +11,9 @@ cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 project("FlatBuffersDlc" VERSION 1.2.0)
 
 set(FLATBUFFERS_REPOSITORY "https://github.com/google/flatbuffers" CACHE STRING "Repository of flatbuffers")
-set(FLATBUFFERS_TAG "master" CACHE STRING "Git tag/branch of flatbuffers")
+set(FLATBUFFERS_TAG "v2.0.0" CACHE STRING "Git tag/branch of flatbuffers")
 
-include(FetchContent)
-
-# flatbuffers
-FetchContent_Declare(
-  flatbuffers
-  GIT_REPOSITORY ${FLATBUFFERS_REPOSITORY}
-  GIT_TAG        ${FLATBUFFERS_TAG}
-  )
+include(cmake/CPM.cmake)
 
 if(NOT FBS_FOLDER_PREFIX)
   set(FBS_FOLDER_PREFIX "Dependencies/flatbuffers" CACHE STRING "")
@@ -45,8 +38,6 @@ set(FLATBUFFERS_ENABLE_PCH ON CACHE BOOL
         This can speed up compilation time."
        )
 
-FetchContent_MakeAvailable(flatbuffers)
-
 set_target_properties(flatbuffers
   PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
 
@@ -66,6 +57,13 @@ if(FLATBUFFERS_BUILD_TESTS)
   set_target_properties(flattests
     PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Tests)
 endif()
+
+# flatbuffers
+CPMAddPackage(
+  NAME flatbuffers
+  GIT_REPOSITORY ${FLATBUFFERS_REPOSITORY}
+  GIT_TAG        ${FLATBUFFERS_TAG}
+  )
 
 # Create flat2h
 if(FBS_IS_HOST_COMPILING AND FLATBUFFERS_BUILD_FLATC)
