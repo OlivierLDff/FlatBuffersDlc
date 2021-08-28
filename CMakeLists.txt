@@ -38,8 +38,14 @@ set(FLATBUFFERS_ENABLE_PCH ON CACHE BOOL
         This can speed up compilation time."
        )
 
-set_target_properties(flatbuffers
-  PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
+# flatbuffers
+CPMAddPackage(
+  NAME flatbuffers
+  GIT_REPOSITORY ${FLATBUFFERS_REPOSITORY}
+  GIT_TAG ${FLATBUFFERS_TAG}
+)
+
+set_target_properties(flatbuffers PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
 
 if(FLATBUFFERS_BUILD_FLATC)
   set_target_properties(flatc
@@ -57,13 +63,6 @@ if(FLATBUFFERS_BUILD_TESTS)
   set_target_properties(flattests
     PROPERTIES FOLDER ${FBS_FOLDER_PREFIX}/Tests)
 endif()
-
-# flatbuffers
-CPMAddPackage(
-  NAME flatbuffers
-  GIT_REPOSITORY ${FLATBUFFERS_REPOSITORY}
-  GIT_TAG        ${FLATBUFFERS_TAG}
-  )
 
 # Create flat2h
 if(FBS_IS_HOST_COMPILING AND FLATBUFFERS_BUILD_FLATC)
