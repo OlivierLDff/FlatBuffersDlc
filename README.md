@@ -1,5 +1,7 @@
 # FlatBuffersCMake
 
+[![CI](https://github.com/OlivierLDff/FlatBuffersDlc/actions/workflows/main.yml/badge.svg)](https://github.com/OlivierLDff/FlatBuffersDlc/actions/workflows/main.yml)
+
 ## What is it?
 
 This project provide a simple CMake macro to build flatc executable and generate flatbuffers c++ headers. Including the `CMakeLists.txt` also build the library `flatbuffers` that you can link to.
