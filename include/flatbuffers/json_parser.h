@@ -276,8 +276,8 @@ public:
     bool generateText(
         const void* flatbuffer, std::string& output) override final
     {
-        return initGenerateText() &&
-               GenerateText(*_parser, flatbuffer, &output);
+        return generateTextFromTable(
+            flatbuffers::GetRoot<T>(flatbuffer), output);
     }
     bool generateTextFromTable(
         const void* table, std::string& output) override final
