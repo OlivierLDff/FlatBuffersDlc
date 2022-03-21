@@ -21,6 +21,8 @@ function(add_fbs_target TARGET SOURCES)
       FILENAME_RC_SUFFIX
       COPY_TEXT_SCHEMA_DIR
       TREE
+      FLATC_PROGRAM
+      FLAT2H_PROGRAM
   )
   set(FBS_MULTI_VALUE_ARG DEPENDENCIES FLATC_ARGUMENTS INCLUDE_DIR)
   # parse the function arguments
@@ -36,6 +38,22 @@ function(add_fbs_target TARGET SOURCES)
   set(FBS_DEPENDENCIES ${ARGFBS_DEPENDENCIES})
   set(FBS_FLATC_ARGUMENTS ${ARGFBS_FLATC_ARGUMENTS})
   set(FBS_INCLUDE_DIR ${ARGFBS_INCLUDE_DIR})
+
+  if(ARGFBS_FLATC_PROGRAM)
+    set(FLATC_PROGRAM ${ARGFBS_FLATC_PROGRAM})
+    set(FLATC_TARGET "")
+  else()
+    set(FLATC_PROGRAM flatc)
+    set(FLATC_TARGET ${FLATC_PROGRAM})
+  endif()
+
+  if(ARGFBS_FLAT2H_PROGRAM)
+    set(FLAT2H_PROGRAM ${ARGFBS_FLAT2H_PROGRAM})
+    set(FLAT2H_TARGET "")
+  else()
+    set(FLAT2H_PROGRAM flat2h)
+    set(FLAT2H_TARGET ${FLAT2H_PROGRAM})
+  endif()
 
   if(ARGFBS_REFLECT_NAMES)
     set(FBS_REFLECT_NAMES --reflect-names)
@@ -130,9 +148,9 @@ function(add_fbs_target TARGET SOURCES)
       endif()
       add_custom_command(
         OUTPUT ${GENERATED_INCLUDE}
-        COMMAND flatc ${FBS_FLATC_ARGUMENTS} -o ${GENERATED_DIR} ${INCLUDE_PARAMS} -c ${SRC} ${FBS_FILENAME_EXT} ${FBS_FILENAME_SUFFIX} ${FBS_REFLECT_NAMES} ${FBS_GEN_NAME_STRINGS}
+        COMMAND ${FLATC_PROGRAM} ${FBS_FLATC_ARGUMENTS} -o ${GENERATED_DIR} ${INCLUDE_PARAMS} -c ${SRC} ${FBS_FILENAME_EXT} ${FBS_FILENAME_SUFFIX} ${FBS_REFLECT_NAMES} ${FBS_GEN_NAME_STRINGS}
                 ${FBS_GEN_MUTABLE} ${FBS_GEN_COMPARE} ${FBS_GEN_OBJECT_API} ${FBS_SCOPED_ENUMS} ${FBS_GEN_SHARED_PTR}
-        DEPENDS flatc ${SRC} ${FBS_DEPENDENCIES}
+        DEPENDS ${FLATC_TARGET} ${SRC} ${FBS_DEPENDENCIES}
         COMMENT "Generate ${GENERATED_INCLUDE} from ${SRC}"
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
       )
@@ -149,8 +167,8 @@ function(add_fbs_target TARGET SOURCES)
         endif()
         add_custom_command(
           OUTPUT ${GENERATED_RC}
-          COMMAND flat2h -i ${SRC} -o ${GENERATED_DIR} ${FBS_FILENAME_EXT} ${FBS_FILENAME_RC_SUFFIX}
-          DEPENDS flat2h ${SRC} ${FBS_DEPENDENCIES}
+          COMMAND ${FLAT2H_PROGRAM} -i ${SRC} -o ${GENERATED_DIR} ${FBS_FILENAME_EXT} ${FBS_FILENAME_RC_SUFFIX}
+          DEPENDS ${FLAT2H_TARGET} ${SRC} ${FBS_DEPENDENCIES}
           COMMENT "Generate ${GENERATED_RC} from ${SRC}"
           WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
         )
@@ -169,7 +187,7 @@ function(add_fbs_target TARGET SOURCES)
       endif()
       add_custom_command(
         OUTPUT ${BINARY_SCHEMA}
-        COMMAND flatc -b --schema -o ${FBS_BINARY_SCHEMA_DIR} ${INCLUDE_PARAMS} ${SRC}
+        COMMAND ${FLATC_PROGRAM} -b --schema -o ${FBS_BINARY_SCHEMA_DIR} ${INCLUDE_PARAMS} ${SRC}
         DEPENDS ${FLATC_TARGET} ${SRC} ${FBS_DEPENDENCIES}
         COMMENT "Generate ${FILENAME}.bfbs in ${FBS_GENERATED_INCLUDE_DIR} from ${SRC}"
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -201,6 +219,6 @@ function(add_fbs_target TARGET SOURCES)
     message(STATUS "${FBS_TARGET} generated files : ${ALL_GENERATED_FILES}")
   endif(FBS_VERBOSE)
 
-  add_custom_target(${FBS_TARGET} DEPENDS flatc ${ALL_GENERATED_FILES} ${FBS_DEPENDENCIES})
+  add_custom_target(${FBS_TARGET} DEPENDS ${FLATC_TARGET} ${ALL_GENERATED_FILES} ${FBS_DEPENDENCIES})
 
 endfunction()
