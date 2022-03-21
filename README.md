@@ -166,6 +166,11 @@ More information in [Using different string type.](https://google.github.io/flat
 Use C++11 style scoped and strongly typed enums in generated C++. This also implies --no-prefix.
 Associated flag is `--scoped-enums`.
 
+**TREE**
+
+Add relative path from tree to file in generated include directory.
+For example if you generated file is `foo/bar/foobar.fbs` and generated directory is `src`, then file will be flatbuffers header will be generated as `src/foo/bar/foobar_generated.h`
+
 **DEPENDENCIES**
 
 Add dependencies to the target `Target`.
