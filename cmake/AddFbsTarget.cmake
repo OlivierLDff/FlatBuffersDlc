@@ -20,6 +20,7 @@ function(add_fbs_target TARGET SOURCES)
       FILENAME_SUFFIX
       FILENAME_RC_SUFFIX
       COPY_TEXT_SCHEMA_DIR
+      TREE
   )
   set(FBS_MULTI_VALUE_ARG DEPENDENCIES FLATC_ARGUMENTS INCLUDE_DIR)
   # parse the function arguments
@@ -106,6 +107,13 @@ function(add_fbs_target TARGET SOURCES)
 
   foreach(SRC ${FBS_SRCS})
 
+    if(ARGFBS_TREE)
+      file(RELATIVE_PATH SRC_TREE_REL_PATH ${ARGFBS_TREE} ${SRC})
+      get_filename_component(SRC_TREE_PATH ${SRC_TREE_REL_PATH} DIRECTORY)
+    else()
+      set(SRC_TREE_PATH "")
+    endif()
+
     # Isolate filename to create the generated filename
     get_filename_component(FILENAME ${SRC} NAME_WE)
 
@@ -113,7 +121,8 @@ function(add_fbs_target TARGET SOURCES)
     if(NOT ${FBS_GENERATED_INCLUDE_DIR} STREQUAL "")
 
       # Name of the output generated file
-      set(GENERATED_INCLUDE ${FBS_GENERATED_INCLUDE_DIR}/${FILENAME}${ARGFBS_FILENAME_SUFFIX}.${ARGFBS_FILENAME_EXT})
+      set(GENERATED_DIR ${FBS_GENERATED_INCLUDE_DIR}/${SRC_TREE_PATH})
+      set(GENERATED_INCLUDE ${GENERATED_DIR}/${FILENAME}${ARGFBS_FILENAME_SUFFIX}.${ARGFBS_FILENAME_EXT})
 
       # Add the rule for each files
       if(FBS_VERBOSE)
@@ -121,7 +130,7 @@ function(add_fbs_target TARGET SOURCES)
       endif()
       add_custom_command(
         OUTPUT ${GENERATED_INCLUDE}
-        COMMAND flatc ${FBS_FLATC_ARGUMENTS} -o ${FBS_GENERATED_INCLUDE_DIR} ${INCLUDE_PARAMS} -c ${SRC} ${FBS_FILENAME_EXT} ${FBS_FILENAME_SUFFIX} ${FBS_REFLECT_NAMES} ${FBS_GEN_NAME_STRINGS}
+        COMMAND flatc ${FBS_FLATC_ARGUMENTS} -o ${GENERATED_DIR} ${INCLUDE_PARAMS} -c ${SRC} ${FBS_FILENAME_EXT} ${FBS_FILENAME_SUFFIX} ${FBS_REFLECT_NAMES} ${FBS_GEN_NAME_STRINGS}
                 ${FBS_GEN_MUTABLE} ${FBS_GEN_COMPARE} ${FBS_GEN_OBJECT_API} ${FBS_SCOPED_ENUMS} ${FBS_GEN_SHARED_PTR}
         DEPENDS flatc ${SRC} ${FBS_DEPENDENCIES}
         COMMENT "Generate ${GENERATED_INCLUDE} from ${SRC}"
@@ -132,14 +141,15 @@ function(add_fbs_target TARGET SOURCES)
       if(FBS_RC_SCHEMAS)
 
         # Name of the output generated file
-        set(GENERATED_RC ${FBS_GENERATED_INCLUDE_DIR}/${FILENAME}${ARGFBS_FILENAME_RC_SUFFIX}.${ARGFBS_FILENAME_EXT})
+        set(GENERATED_DIR ${FBS_GENERATED_INCLUDE_DIR}/${SRC_TREE_PATH})
+        set(GENERATED_RC ${GENERATED_DIR}/${FILENAME}${ARGFBS_FILENAME_RC_SUFFIX}.${ARGFBS_FILENAME_EXT})
 
         if(FBS_VERBOSE)
           message(STATUS "Add rule to build ${GENERATED_RC} from ${SRC}")
         endif()
         add_custom_command(
           OUTPUT ${GENERATED_RC}
-          COMMAND flat2h -i ${SRC} -o ${FBS_GENERATED_INCLUDE_DIR} ${FBS_FILENAME_EXT} ${FBS_FILENAME_RC_SUFFIX}
+          COMMAND flat2h -i ${SRC} -o ${GENERATED_DIR} ${FBS_FILENAME_EXT} ${FBS_FILENAME_RC_SUFFIX}
           DEPENDS flat2h ${SRC} ${FBS_DEPENDENCIES}
           COMMENT "Generate ${GENERATED_RC} from ${SRC}"
           WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
