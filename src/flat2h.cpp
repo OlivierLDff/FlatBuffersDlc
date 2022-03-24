@@ -68,6 +68,8 @@ int main(int argc, char* argv[])
     char* pos;
     std::vector<std::string> namespaces;
 
+    std::error_code ec;
+
     if(argc <= 1 || (argc == 2 && strcmp(argv[1], "-h") == 0))
     {
         print_help((argc > 0) ? argv[0] : "flat2h");
@@ -175,9 +177,15 @@ int main(int argc, char* argv[])
         className = m[1].str();
     }
 
-    if(!std::filesystem::create_directories(outputFolder))
+    if(std::filesystem::create_directories(outputFolder, ec))
     {
-        printf("Failed to create output directory %s\n", outputFolder);
+        printf("Create output directory %s\n", outputFolder);
+    }
+
+    if(ec)
+    {
+        printf("Failed to create output directory %s with error %s\n",
+            outputFolder, ec.message().c_str());
         goto exit;
     }
 
