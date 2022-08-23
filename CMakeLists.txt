@@ -10,11 +10,11 @@ cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 project("FlatBuffersDlc" VERSION 1.4.1)
 
 set(FLATBUFFERS_REPOSITORY
-    "https://github.com/google/flatbuffers"
+    "https://github.com/OlivierLDff/flatbuffers"
     CACHE STRING "Repository of flatbuffers"
 )
 set(FLATBUFFERS_TAG
-    "v2.0.0"
+    "v2.0.7"
     CACHE STRING "Git tag/branch of flatbuffers"
 )
 
