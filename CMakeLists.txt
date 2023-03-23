@@ -14,7 +14,7 @@ set(FLATBUFFERS_REPOSITORY
     CACHE STRING "Repository of flatbuffers"
 )
 set(FLATBUFFERS_TAG
-    "v2.0.7"
+    "v23.3.3"
     CACHE STRING "Git tag/branch of flatbuffers"
 )
 
