@@ -89,6 +89,10 @@ endif()
 # Create flat2h
 if(FBS_IS_HOST_COMPILING AND FLATBUFFERS_BUILD_FLATC)
   add_executable(flat2h ${CMAKE_CURRENT_SOURCE_DIR}/src/flat2h.cpp)
+  # If gcc
+  if(CMAKE_COMPILER_IS_GNUCXX)
+    target_link_libraries(flat2h PRIVATE stdc++fs)
+  endif()
   target_compile_features(flat2h PRIVATE cxx_std_17)
   if(FBS_FOLDER_PREFIX AND NOT ${FBS_FOLDER_PREFIX} STREQUAL "")
     set_target_properties(flat2h PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
