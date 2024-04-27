@@ -119,8 +119,8 @@ public:
      * \return true if json generation is a success, false otherwise.
      * You can get any error using error()
      */
-    virtual bool generateTextFromTable(
-        const void* table, std::string& output) = 0;
+    virtual bool generateTextFromTable(const void* table,
+        std::string& output) = 0;
 };
 
 /**
@@ -273,17 +273,18 @@ private:
     }
 
 public:
-    bool generateText(
-        const void* flatbuffer, std::string& output) override final
+    bool generateText(const void* flatbuffer,
+        std::string& output) override final
     {
-        return generateTextFromTable(
-            flatbuffers::GetRoot<T>(flatbuffer), output);
+        return generateTextFromTable(flatbuffers::GetRoot<T>(flatbuffer),
+            output);
     }
-    bool generateTextFromTable(
-        const void* table, std::string& output) override final
+    bool generateTextFromTable(const void* table,
+        std::string& output) override final
     {
-        return initGenerateText() && GenerateTextFromTable(*_parser, table,
-                                         T::GetFullyQualifiedName(), &output);
+        return initGenerateText() &&
+               flatbuffers::GenTextFromTable(*_parser, table,
+                   T::GetFullyQualifiedName(), &output) == nullptr;
     }
 
     static std::shared_ptr<TJsonParser<T, Types...>> make()
