@@ -72,7 +72,7 @@ CPMAddPackage(
 )
 
 # This might happen if CPM_USE_LOCAL_PACKAGES is set to ON and flatbuffers is found in the system
-if(NOT TARGET flatbuffers and TARGET flatbuffers::flatbuffers)
+if(NOT TARGET flatbuffers AND TARGET flatbuffers::flatbuffers)
   message(STATUS "Define target flatbuffers to be an alias from flatbuffers::flatbuffers")
   add_library(flatbuffers INTERFACE)
   target_link_libraries(flatbuffers INTERFACE flatbuffers::flatbuffers)
@@ -80,7 +80,7 @@ endif()
 
 set_target_properties(flatbuffers PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
 
-if(FLATBUFFERS_BUILD_FLATC and TARGET flatc)
+if(FLATBUFFERS_BUILD_FLATC AND TARGET flatc)
   set_target_properties(flatc PROPERTIES FOLDER ${FBS_FOLDER_PREFIX})
 endif()
 
